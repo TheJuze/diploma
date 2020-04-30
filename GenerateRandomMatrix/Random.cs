@@ -5,13 +5,16 @@ namespace GenerateRandomMatrix
 {
     class Random
     {
+        private static int n;
+        private static int[,] A;
+
         static void Main(string[] args)
         {
-            int n = Diploma.Program.n;
-            int[,] A = RandGenerator(n);
-            FillFile(A, n);
+            n = Diploma.Program.n;
+            A = RandGenerator();
+            FillFile(A);
         }
-        static int[,] RandGenerator(int n)
+        static int[,] RandGenerator()
         {
             int[,] A = new int[n, n];
             System.Random rand = new System.Random(DateTime.Now.Millisecond);
@@ -29,7 +32,7 @@ namespace GenerateRandomMatrix
             }
             return A;
         }
-        static void FillFile(int[,] A, int n)
+        static void FillFile(int[,] A)
         {
             string path = @"C:\Users\diman\source\repos\Diploma";
             DirectoryInfo dirInfo = new DirectoryInfo(path);

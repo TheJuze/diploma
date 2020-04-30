@@ -93,7 +93,7 @@ namespace Diploma
         }
         private static void SecondStepA()
         {
-            quantityOfPossibleExtension[indexOfFirstPlunk] = Matrix.FindPossibleExtensions(omega[indexOfFirstPlunk]);
+            quantityOfPossibleExtension[indexOfFirstPlunk] = PossibleExtension.FindPossibleExtensions(omega[indexOfFirstPlunk]);
             SecondStepA1();
         }
         private static void SecondStepA1()
@@ -120,14 +120,14 @@ namespace Diploma
                     newMultitudeF.Add(element.index);
                 }
                 #endregion
-                centralElement = Matrix.FindCentral(new List<int>(omega[indexOfFirstPlunk].Except(newMultitudeF)));
+                centralElement = CentralElement.FindCentral(new List<int>(omega[indexOfFirstPlunk].Except(newMultitudeF)));
                 if (IsEqual(quantityOfPossibleExtension[indexOfFirstPlunk], supportingMultitudeQ[indexOfFirstPlunk]))
                 {
                     SecondStepA1c();
                 }
                 else if (new List<PossibleExtension>(quantityOfPossibleExtension[indexOfFirstPlunk].Except(supportingMultitudeQ[indexOfFirstPlunk])).Count != 0)
                 {
-                    knotElement = Matrix.FindKnot(new List<PossibleExtension>(quantityOfPossibleExtension[indexOfFirstPlunk].Except(supportingMultitudeQ[indexOfFirstPlunk])));
+                    knotElement = PossibleExtension.FindKnot(new List<PossibleExtension>(quantityOfPossibleExtension[indexOfFirstPlunk].Except(supportingMultitudeQ[indexOfFirstPlunk])));
                     //сравниваем веса претендентов на роль узлового и центрального эл-тов
                     if (knotElement.weight < centralElement.weight)//неравенство 2.3.1
                     {
@@ -278,8 +278,8 @@ namespace Diploma
         }
         private static void FourthStepA()
         {
-            quantityOfSecondPossibleExtension[indexOfSecondPlunk] = Matrix.FindPossibleExtensions(secondOmega[indexOfSecondPlunk]);
-            centralSecondElement[indexOfSecondPlunk].Add(Matrix.FindCentral(secondOmega[indexOfSecondPlunk]));
+            quantityOfSecondPossibleExtension[indexOfSecondPlunk] = PossibleExtension.FindPossibleExtensions(secondOmega[indexOfSecondPlunk]);
+            centralSecondElement[indexOfSecondPlunk].Add(CentralElement.FindCentral(secondOmega[indexOfSecondPlunk]));
             FourthStepA0();
         }
         private static void FourthStepA0()
@@ -296,7 +296,7 @@ namespace Diploma
         private static void FourthStepA1a()//FourthStepA1a here
         {
 
-            PossibleExtension possibleKnot = Matrix.FindKnot(new List<PossibleExtension>(quantityOfSecondPossibleExtension[indexOfSecondPlunk].Except(helpfullMultitudeQ[indexOfSecondPlunk])));
+            PossibleExtension possibleKnot = PossibleExtension.FindKnot(new List<PossibleExtension>(quantityOfSecondPossibleExtension[indexOfSecondPlunk].Except(helpfullMultitudeQ[indexOfSecondPlunk])));
             if (centralSecondElement[indexOfSecondPlunk].Last().weight > possibleKnot.weight)//неравенство 2.3.4
             {
                 FourthStepA1c();

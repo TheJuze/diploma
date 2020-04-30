@@ -13,5 +13,25 @@ namespace Diploma
             this.index = _index;
             this.weight = _weight;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newOmega">omega.except thomthing</param>
+        /// <param name="weights"> weight coef</param>
+        /// <returns> Central Element</returns>
+        public static CentralElement FindCentral(List<int> newOmega)
+        {
+            CentralElement centralElement = new CentralElement(-1, 0);
+            foreach (WeightCoefficient _weight in Program.weights)
+            {
+                if (newOmega.Contains(_weight.index) && centralElement.weight < _weight.weight)
+                {
+                    centralElement.index = _weight.index;
+                    centralElement.weight = _weight.weight;
+                }
+            }
+
+            return centralElement;
+        }
     }
 }

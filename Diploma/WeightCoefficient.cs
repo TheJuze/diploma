@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Diploma
 {
-    public class WeightCoefficient
+    public struct WeightCoefficient
     {
         public int index { get; set; }
         public int weight { get; set; }
