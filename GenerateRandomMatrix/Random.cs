@@ -7,7 +7,7 @@ namespace GenerateRandomMatrix
     {
         static void Main(string[] args)
         {
-            int n = 12;
+            int n = Diploma.Program.n;
             int[,] A = RandGenerator(n);
             FillFile(A, n);
         }
