@@ -6,7 +6,7 @@ namespace Diploma
 {
     public class Program
     {
-        public static int n { get; } = 13;//размерность матрицы
+        public static int n { get; } = 7;//размерность матрицы
         public static List<WeightCoefficient> weights { get; set; } = new List<WeightCoefficient>();//весовые коэф. индекс/значение
         private static Matrix a = new Matrix(n, n);//исходная структурная матрица
         private static int[,] b = new int[n, n];//преобразованная структурная матрица
@@ -307,13 +307,16 @@ namespace Diploma
                 #region
                 int newWeight = 0;
                 newWeight += firstOrderedMultitude.weight;//первое слагаемое
-                foreach (PossibleExtension element in helpfullMultitudeQ[indexOfSecondPlunk])
+                foreach (List<PossibleExtension> element in helpfullMultitudeQ)//3 слагаемое
                 {
-                    foreach (WeightCoefficient weight in Program.weights)
+                    if (element.Any())
                     {
-                        if (weight.index == element.i || weight.index == element.j)
+                        foreach (WeightCoefficient weight in weights)
                         {
-                            secondOrderedMultitude.weight += weight.weight;
+                            if (element.Last().i == weight.index || element.Last().j == weight.index)
+                            {
+                                newWeight += weight.weight;
+                            }
                         }
                     }
                 }
@@ -389,14 +392,30 @@ namespace Diploma
             int newWeight = 0;
             newWeight += firstOrderedMultitude.weight;//первое слагаемое
             newWeight += centralSecondElement[indexOfSecondPlunk].Last().weight;//второе слагаемое
-
-            foreach (PossibleExtension element in helpfullMultitudeQ[indexOfSecondPlunk])//3 слагаемое
+           /* if (helpfullMultitudeQ[indexOfSecondPlunk].Count == 0)//FIXME: проблемное место
             {
-                foreach (WeightCoefficient weight in Program.weights)
+                helpfullMultitudeQ[indexOfSecondPlunk] = helpfullMultitudeQ[indexOfSecondPlunk - 1];//только написал
+            }*/
+            /*foreach (PossibleExtension element in helpfullMultitudeQ[indexOfSecondPlunk])//3 слагаемое
+            {
+                foreach (WeightCoefficient weight in weights)
                 {
                     if (weight.index == element.i || weight.index == element.j)
                     {
-                        secondOrderedMultitude.weight += weight.weight;
+                        newWeight += weight.weight;
+                    }
+                }
+            }*/
+            foreach (List<PossibleExtension> element in helpfullMultitudeQ)//3 слагаемое
+            {
+                if (element.Any())
+                {
+                    foreach (WeightCoefficient weight in weights)
+                    {
+                        if (element.Last().i == weight.index || element.Last().j == weight.index)
+                        {
+                            newWeight += weight.weight;
+                        }
                     }
                 }
             }
