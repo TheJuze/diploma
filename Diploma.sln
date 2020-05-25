@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diploma", "Diploma\Diploma.csproj", "{A85FC51B-369A-4232-83F2-3EC203088D05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diploma", "Diploma\Diploma.csproj", "{A85FC51B-369A-4232-83F2-3EC203088D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateRandomMatrix", "GenerateRandomMatrix\GenerateRandomMatrix.csproj", "{3FB6E19E-971B-4587-BBFE-504692295A36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateRandomMatrix", "GenerateRandomMatrix\GenerateRandomMatrix.csproj", "{3FB6E19E-971B-4587-BBFE-504692295A36}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiplomaApp", "DiplomaApp\DiplomaApp.csproj", "{B3EE6754-E6BB-4244-9956-0362B2580082}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixParameters", "MatrixParameters\MatrixParameters.csproj", "{E6DE9849-F5CB-4328-89B9-B95DADE89CAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{3FB6E19E-971B-4587-BBFE-504692295A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB6E19E-971B-4587-BBFE-504692295A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB6E19E-971B-4587-BBFE-504692295A36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3EE6754-E6BB-4244-9956-0362B2580082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3EE6754-E6BB-4244-9956-0362B2580082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3EE6754-E6BB-4244-9956-0362B2580082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3EE6754-E6BB-4244-9956-0362B2580082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6DE9849-F5CB-4328-89B9-B95DADE89CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6DE9849-F5CB-4328-89B9-B95DADE89CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6DE9849-F5CB-4328-89B9-B95DADE89CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6DE9849-F5CB-4328-89B9-B95DADE89CAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

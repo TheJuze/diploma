@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace Diploma
 {
     public class Program
     {
-        public static int n { get; } = 7;//размерность матрицы
+        public static int n { get; set; } = 7;//размерность матрицы
         public static List<WeightCoefficient> weights { get; set; } = new List<WeightCoefficient>();//весовые коэф. индекс/значение
         private static Matrix a = new Matrix(n, n);//исходная структурная матрица
         private static int[,] b = new int[n, n];//преобразованная структурная матрица
 
         public static int[] transition = new int[n];  //перестановка
 
-        private static int taskType = 2;//тип задачи
-
+        public static int taskType { get; set; } = 2;//тип задачи
+        public static string inputFileName { get; set; } = "input.txt";//тип задачи
 
         private static List<List<int>> omega = new List<List<int>>();//множество Омега
         private static List<List<int>> secondOmega = new List<List<int>>();//множество Омега
@@ -22,8 +24,8 @@ namespace Diploma
         private static OrderedMultitude firstRecord;//рекордное B1
         private static OrderedMultitude secondRecord;//рекордное B2
 
-        private static OrderedMultitude firstOrderedMultitude;//B1
-        private static OrderedMultitude secondOrderedMultitude;//B2
+        private static OrderedMultitude firstOrderedMultitude = new OrderedMultitude();//B1
+        private static OrderedMultitude secondOrderedMultitude = new OrderedMultitude();//B2
 
         private static List<List<CentralElement>> supportingMultitudeF = new List<List<CentralElement>>();//первое вспомогательное множество
         private static List<List<PossibleExtension>> supportingMultitudeQ = new List<List<PossibleExtension>>();//второе вспомогательное множество
@@ -38,22 +40,46 @@ namespace Diploma
 
         private static List<List<PossibleExtension>> quantityOfPossibleExtension = new List<List<PossibleExtension>>();//Множество возможных продолжений для первого множества
         private static List<List<PossibleExtension>> quantityOfSecondPossibleExtension = new List<List<PossibleExtension>>();//Множество возможных продолжений для второго множества
-        static void Main(string[] args)
+
+        private static Stopwatch time;// создаём объект Stopwatch
+        public static void Main(string[] args)
         {
+            Thread FirstThread = new Thread(ThirdStep, 2147483647);//увеличение памяти
+            Thread SecondThread = new Thread(FirstStep, 2147483647);//увеличение памяти
+            time = new Stopwatch(); 
+            time.Start(); // запускаем отсчёт времени
+            if (args.Length > 0)
+            {
+                inputFileName = args[0];
+                n = int.Parse(args[1]);
+                taskType = int.Parse(args[2]);
+            }
             a.Fill();//заполнить структурную матрицу из файла
             Console.WriteLine("Исходная структурная матрица:");
             a.Print();//Показать заполненную матрицу
-            //TODO: брать веса из файла
-            for (int i = 0; i < n; i++)
-            {
-                weights.Add(new WeightCoefficient(i, 1));
-            }
+                      //TODO: брать веса из файла
+                      /* if (weights.Count == 0 || weights.Count != n)
+                       {
+                           for (int i = 0; i < n; i++)
+                           {
+                               weights.Add(new WeightCoefficient(i, 1));
+                           }
+                       }*/
+            weights.Add(new WeightCoefficient(0,4));
+            weights.Add(new WeightCoefficient(1,2));
+            weights.Add(new WeightCoefficient(2,2));
+            weights.Add(new WeightCoefficient(3,5));
+            weights.Add(new WeightCoefficient(4,3));
+            weights.Add(new WeightCoefficient(5,3));
+            weights.Add(new WeightCoefficient(6,4));
 
             omega = a.FindOmegaZero();//ищем омега (1,0)
 
             if (omega[0].Count == 0)
             {
                 Console.WriteLine("Никакое изменение порядка следования уравнений исходной системы не может обеспечить выделения групп уравнений, имеющих структурные особенности");
+                time.Stop(); // останавливаем работу
+                Console.WriteLine(time.Elapsed); // выводим затраченное время
             }
             else
             {
@@ -62,15 +88,19 @@ namespace Diploma
                     firstOrderedMultitude = new OrderedMultitude();
                     firstRecord = new OrderedMultitude();
                     secondRecord = new OrderedMultitude();
-                    ThirdStep();
+                    FirstThread.Start();
+                    //   ThirdStep();
                 }
                 else if (taskType == 2)
                 {
-                    FirstStep();
+                    SecondThread.Start();
+                   // FirstStep();
                 }
             }
+
+         //   Console.Read();
         }
-        private static void FirstStep()
+        static void FirstStep()
         {
             indexOfFirstPlunk = 0;
             firstRecord = new OrderedMultitude();//B1
@@ -138,7 +168,20 @@ namespace Diploma
                         //левая часть 
                         #region
                         int newWeight = 0;
-                        foreach (List<PossibleExtension> element in supportingMultitudeQ)
+                        for (int i = 0; i < supportingMultitudeQ.Count - 1; i++)//1 слагаемое
+                        {
+                            if (supportingMultitudeQ[i].Any())
+                            {
+                                foreach (WeightCoefficient weight in weights)
+                                {
+                                    if (supportingMultitudeQ[i].Last().i == weight.index || supportingMultitudeQ[i].Last().j == weight.index)
+                                    {
+                                        newWeight += weight.weight;
+                                    }
+                                }
+                            }
+                        }
+                        /*foreach (List<PossibleExtension> element in supportingMultitudeQ)
                         {
                             if (element.Any())
                             {
@@ -151,7 +194,7 @@ namespace Diploma
                                 }
                             }
 
-                        }
+                        }*/
 
                         newWeight += knotElement.weight;//сумма слагаемых
                         #endregion
@@ -202,8 +245,20 @@ namespace Diploma
             //неравенство 2.3.3
             #region
             int newWeight = 0;
-
-            foreach (List<PossibleExtension> element in supportingMultitudeQ)
+            for (int i = 0; i < supportingMultitudeQ.Count - 1; i++)//1 слагаемое
+            {
+                if (supportingMultitudeQ[i].Any())
+                {
+                    foreach (WeightCoefficient weight in weights)
+                    {
+                        if (supportingMultitudeQ[i].Last().i == weight.index || supportingMultitudeQ[i].Last().j == weight.index)
+                        {
+                            newWeight += weight.weight;
+                        }
+                    }
+                }
+            }
+           /* foreach (List<PossibleExtension> element in supportingMultitudeQ)
             {
                 if (element.Any())
                 {
@@ -215,8 +270,7 @@ namespace Diploma
                         }
                     }
                 }
-
-            }
+            }*/
             newWeight += centralElement.weight;//сумма слагаемых
             #endregion
             if (newWeight > (firstRecord.weight + secondRecord.weight) / 2)
@@ -249,10 +303,21 @@ namespace Diploma
         private static void ThirdStep()//перебор для задачи 1 с этого пункта
         {
             //инициализация омега 2,0
-            secondOmega = new List<List<int>>
+            if (taskType == 1)
+            {
+                secondOmega = new List<List<int>>
+            {
+                new List<int>(omega[0])
+            };
+            }
+            else if (taskType == 2)
+            {
+                secondOmega = new List<List<int>>
             {
                 new List<int>(omega[0].Except(firstOrderedMultitude.elements))
             };
+            }
+
             indexOfSecondPlunk = 0;//Номер уровня на 2 дереве перебора
             secondOrderedMultitude = new OrderedMultitude(0, new List<int>());//очищаем
             //вводим второе вспомогательные множества
@@ -307,7 +372,20 @@ namespace Diploma
                 #region
                 int newWeight = 0;
                 newWeight += firstOrderedMultitude.weight;//первое слагаемое
-                foreach (List<PossibleExtension> element in helpfullMultitudeQ)//3 слагаемое
+                for (int i = 0; i < helpfullMultitudeQ.Count - 1; i++)//3 слагаемое
+                {
+                    if (helpfullMultitudeQ[i].Any())
+                    {
+                        foreach (WeightCoefficient weight in weights)
+                        {
+                            if (helpfullMultitudeQ[i].Last().i == weight.index || helpfullMultitudeQ[i].Last().j == weight.index)
+                            {
+                                newWeight += weight.weight;
+                            }
+                        }
+                    }
+                }
+                /*foreach (List<PossibleExtension> element in helpfullMultitudeQ)//3 слагаемое
                 {
                     if (element.Any())
                     {
@@ -319,7 +397,7 @@ namespace Diploma
                             }
                         }
                     }
-                }
+                }*/
                 newWeight += possibleKnot.weight;//сумма слагаемых
                 #endregion
                 if (newWeight > firstRecord.weight + secondRecord.weight)
@@ -361,18 +439,25 @@ namespace Diploma
             {
                 Console.WriteLine("Работа алгоритма по поиску наилучшего упорядоченного множества B2 при фиксированном B1 завершена");//конец
                 Console.Write("B1: ");
-                foreach (int element in firstOrderedMultitude.elements)
+                if (taskType == 2)
                 {
-                    Console.Write("{0}", element);
+                    foreach (int element in firstOrderedMultitude.elements)
+                    {
+                        Console.Write("{0}", element);
+                    }
                 }
+
                 Console.Write("    B2: ");
                 foreach (int element in secondOrderedMultitude.elements)
                 {
                     Console.Write("{0}", element);
                 }
+
+
                 Console.WriteLine();
                 if (taskType == 1)
                 {
+                    secondRecord = secondOrderedMultitude;
                     Console.WriteLine("Найденное рекордное множество B2 и есть искомое");
                     Console.WriteLine();
                     FifthStep();
@@ -392,33 +477,32 @@ namespace Diploma
             int newWeight = 0;
             newWeight += firstOrderedMultitude.weight;//первое слагаемое
             newWeight += centralSecondElement[indexOfSecondPlunk].Last().weight;//второе слагаемое
-           /* if (helpfullMultitudeQ[indexOfSecondPlunk].Count == 0)//FIXME: проблемное место
+            for (int i = 0; i < helpfullMultitudeQ.Count - 1; i++)//3 слагаемое
             {
-                helpfullMultitudeQ[indexOfSecondPlunk] = helpfullMultitudeQ[indexOfSecondPlunk - 1];//только написал
-            }*/
-            /*foreach (PossibleExtension element in helpfullMultitudeQ[indexOfSecondPlunk])//3 слагаемое
-            {
-                foreach (WeightCoefficient weight in weights)
-                {
-                    if (weight.index == element.i || weight.index == element.j)
-                    {
-                        newWeight += weight.weight;
-                    }
-                }
-            }*/
-            foreach (List<PossibleExtension> element in helpfullMultitudeQ)//3 слагаемое
-            {
-                if (element.Any())
+                if (helpfullMultitudeQ[i].Any())
                 {
                     foreach (WeightCoefficient weight in weights)
                     {
-                        if (element.Last().i == weight.index || element.Last().j == weight.index)
+                        if (helpfullMultitudeQ[i].Last().i == weight.index || helpfullMultitudeQ[i].Last().j == weight.index)
                         {
                             newWeight += weight.weight;
                         }
                     }
                 }
             }
+            /* foreach (List<PossibleExtension> element in helpfullMultitudeQ)//3 слагаемое
+             {
+                 if (element.Any())
+                 {
+                     foreach (WeightCoefficient weight in weights)
+                     {
+                         if (element.Last().i == weight.index || element.Last().j == weight.index)
+                         {
+                             newWeight += weight.weight;
+                         }
+                     }
+                 }
+             }*/
             #endregion
             if (newWeight > firstRecord.weight + secondRecord.weight)
             {
@@ -455,10 +539,13 @@ namespace Diploma
             if (firstRecord.weight + secondRecord.weight == omega[0].Count)//неравенство 2.3.7
             {
                 Console.WriteLine("Перебор окончен, сумма весов рекордных множеств имеет максимально возможный вес");//конец
-                Console.Write("B1: ");
-                foreach (int element in firstRecord.elements)
+                if (taskType == 2)
                 {
-                    Console.Write("{0}", element);
+                    Console.Write("B1: ");
+                    foreach (int element in firstRecord.elements)
+                    {
+                        Console.Write("{0}", element);
+                    }
                 }
                 Console.Write("    B2: ");
                 foreach (int element in secondRecord.elements)
@@ -542,6 +629,8 @@ namespace Diploma
             Console.WriteLine("Матрица после перестановки:");
             PrintB();
             // Stack.Clear(); Надо очистить стэк
+            time.Stop(); // останавливаем работу
+            Console.WriteLine(time.Elapsed); // выводим затраченное время
         }
         private static void PrintB()
         {

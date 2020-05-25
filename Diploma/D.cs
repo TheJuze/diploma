@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Diploma
 {
-    class D
+    public class D
     {
         public List<int> i = new List<int>();
         public List<int> j = new List<int>();

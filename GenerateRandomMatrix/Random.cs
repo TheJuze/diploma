@@ -13,6 +13,13 @@ namespace GenerateRandomMatrix
             n = Diploma.Program.n;
             A = RandGenerator();
             FillFile(A);
+            //применение перестановки к матрице
+           /* Diploma.Matrix a = new Diploma.Matrix(n, n);
+            int[,] b = new int[n, n];
+            int[] transition = new int[] { 2,3,1,5,0,4 };
+            a.Fill();
+            b = a.Displacement(transition);
+            FillFile(b);*/
         }
         static int[,] RandGenerator()
         {

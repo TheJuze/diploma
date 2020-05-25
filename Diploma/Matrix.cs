@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Diploma
 {
-    class Matrix
+    public class Matrix
     {
         public static int rows;
         public static int cols;
@@ -24,7 +24,8 @@ namespace Diploma
             set { A[row, column] = value; }
         }
         public void Fill()//Заполнить исходную матрицу из файла
-        {
+        {//@"C:\Users\diman\source\repos\Diploma\input.txt"
+            //Program.inputFileName
             int[] arr = File.ReadAllText(@"C:\Users\diman\source\repos\Diploma\input.txt").Split(' ', '\n').Select(n => int.Parse(n)).ToArray();
             int k = 0;
             for (int i = 0; i < rows; i++)
@@ -38,6 +39,7 @@ namespace Diploma
         }
         public int[,] Displacement(int[] pi) //Возвращает матрицу после перестановки, pi- вектор перестановки
         {
+            //Time
             int[,] B = new int[rows,cols];
             for (int i = 0; i < rows; i++)
             {
